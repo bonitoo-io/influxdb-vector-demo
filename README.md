@@ -1,17 +1,19 @@
 # InfluxDB + Vector
 
-## Architecture
-
-<img src="data-model-metric.svg">
-
-### InfluxDB
+## InfluxDB
 [InfluxDB](https://www.influxdata.com/products/influxdb-overview/) is open source time series database, purpose-built by InfluxData for monitoring metrics and events, provides real-time visibility into stacks, sensors, and systems. Use InfluxDB to capture, analyze, and store millions of points per second and much more.
 
-### Vector 
+## Vector 
 [Vector](https://vector.dev) is a highly reliable observability data router built for demanding production environments. On top of this basic functionality, Vector adds a few important enhancements:
 1. A **richer data model**, supporting not only logs but aggregated metrics, fully structured events, etc
 1. **Programmable transforms** written in lua (or eventually wasm) that let you parse, filter, aggregate, and otherwise manipulate your data in arbitrary ways
 1. **Uncompromising performance** and efficiency that enables a huge variety of deployment strategies
+
+## Architecture
+
+<img src="data-model-metric.svg">
+
+## InfluxDB Metrics Sink
 
 ## Links
 - [InfluxDB](https://www.influxdata.com/products/influxdb-overview/)
