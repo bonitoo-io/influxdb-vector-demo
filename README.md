@@ -56,10 +56,15 @@ The following matrix outlines how Vector metric types are mapped into InfluxDB L
   org = "my-org"
   bucket = "my-bucket"
   token = "${INFLUXDB_TOKEN_ENV_VAR}"
-```
+```  
+
+> &nbsp;
+> To check how documentation looks use script: `/run-docs.sh` and open [http://localhost:3000/docs/reference/sinks/](http://localhost:3000/docs/reference/sinks/)
+> &nbsp;
 
 
 ## Links
+- Vector Pull Request: [feat(new sink): Initial `influxdb_metrics` sink implementation](https://github.com/timberio/vector/pull/1759)
 - [InfluxDB](https://www.influxdata.com/products/influxdb-overview/)
 - [What is Vector?](https://vector.dev/blog/introducing-vector/#what-is-vector)
 - [Vector Metrics Model](https://vector.dev/docs/about/data-model/metric/)
