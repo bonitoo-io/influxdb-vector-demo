@@ -58,9 +58,11 @@ The following matrix outlines how Vector metric types are mapped into InfluxDB L
   token = "${INFLUXDB_TOKEN_ENV_VAR}"
 ```  
 
-> &nbsp;
-> To check how documentation looks use script: `/run-docs.sh` and open [http://localhost:3000/docs/reference/sinks/](http://localhost:3000/docs/reference/sinks/)
-> &nbsp;
+### Showcase
+
+To check how documentation looks use script: `/run-docs.sh` and open [http://localhost:3000/docs/reference/sinks/](http://localhost:3000/docs/reference/sinks/)
+
+> Prerequisites: yarn
 
 
 ## Links
