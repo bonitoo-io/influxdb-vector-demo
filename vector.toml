@@ -53,9 +53,13 @@ data_dir = "/var/lib/vector"
 # Output data into InfluxDB 2
 #
 [sinks.influxdb_2]
+  type = "influxdb_metrics"
   inputs = ["log_to_metric"]
-  type = "console"
-  encoding = "json"
+  namespace = "vector"
+  endpoint = "http://influxdb.v2:9999"
+  org = "my-org"
+  bucket = "my-bucket"
+  token = "my-token"
 
 #[sinks.out]
 #  inputs   = ["syslog"]

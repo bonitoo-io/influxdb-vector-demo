@@ -25,8 +25,8 @@ set -e
 
 SCRIPT_PATH="$( cd "$(dirname "$0")" ; pwd -P )"
 
-docker kill influxdb_v2 || true
-docker rm influxdb_v2 || true
+docker kill influxdb.v2 || true
+docker rm influxdb.v2 || true
 
 docker kill vector || true
 docker rm vector || true
@@ -45,7 +45,7 @@ docker network create -d bridge influx_network --subnet 192.168.0.0/24 --gateway
 ##
 docker run \
        --detach \
-       --name influxdb_v2 \
+       --name influxdb.v2 \
        --network influx_network \
        --publish 9999:9999 \
        quay.io/influxdb/influxdb:2.0.0-beta
