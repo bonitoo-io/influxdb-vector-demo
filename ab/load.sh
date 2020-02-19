@@ -21,11 +21,5 @@
 # THE SOFTWARE.
 #
 
-set -e
-
-SCRIPT_PATH="$( cd "$(dirname "$0")" ; pwd -P )"
-
-git clone https://github.com/timberio/vector "${SCRIPT_PATH}"/vector-sources || true
-cd "${SCRIPT_PATH}"/vector-sources/website
-yarn
-yarn start
+apk add parallel
+cat /tmp/urls.txt | parallel "watch -n 5 ab -n 1000 -c 10 {}"

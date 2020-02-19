@@ -1,0 +1,63 @@
+#                                    __   __  __
+#                                    \ \ / / / /
+#                                     \ V / / /
+#                                      \_/  \/
+#
+#                                    V E C T O R
+#                                   Configuration
+#
+# ------------------------------------------------------------------------------
+# Website: https://vector.dev
+# Docs: https://vector.dev/docs/
+# ------------------------------------------------------------------------------
+
+# Note: A full config spec is located at ./vector.spec.toml and examples
+#       in the ./examples folder.
+
+data_dir = "/var/lib/vector"
+
+# Input data. Change me to a valid input source.
+#[sources.in]
+#  type = "stdin"
+
+[sources.syslog]
+  # REQUIRED - General
+  type = "syslog" # must be: "syslog"
+  mode = "udp" # example, enum
+
+  # OPTIONAL - Context
+  # host_key = "host" # default
+
+  # OPTIONAL - General
+  address = "0.0.0.0:5140" # example, no default, relevant when mode = "tcp" or mode = "udp"
+
+#
+# Transform logs into metrics
+#
+[transforms.regex_parser]
+  inputs = ["syslog"]
+  type = "regex_parser"
+  regex = '^(?P<host>[\w\.]+) - (?P<user>[\w-]+) \[(?P<timestamp>.*)\] "(?P<method>[\w]+) (?P<path>.*)" (?P<status>[\d]+) (?P<bytes_out>[\d]+)$'
+
+[transforms.log_to_metric]
+  inputs = ["regex_parser"]
+  type = "log_to_metric"
+
+[[transforms.log_to_metric.metrics]]
+  type = "counter"
+  increment_by_value = true
+  field = "bytes_out"
+  tags = {method = "{{method}}", status = "{{status}}"}
+
+#
+# Output data into InfluxDB 2
+#
+[sinks.influxdb_2]
+  inputs = ["log_to_metric"]
+  type = "console"
+  encoding = "json"
+
+#[sinks.out]
+#  inputs   = ["syslog"]
+#  type     = "console"
+#  encoding = "text"
