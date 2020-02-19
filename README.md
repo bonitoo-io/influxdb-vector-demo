@@ -60,9 +60,7 @@ The following matrix outlines how Vector metric types are mapped into InfluxDB L
 
 ### Showcase
 
-To check how documentation looks use script: `/run-docs.sh` and open [http://localhost:3000/docs/reference/sinks/](http://localhost:3000/docs/reference/sinks/)
-
-> Prerequisites: git, yarn
+To check how documentation looks like see - [https://vector.dev/docs/reference/sinks/](https://vector.dev/docs/reference/sinks/)
 
 
 ## Links
