@@ -1,4 +1,4 @@
-# InfluxDB + Vector
+# InfluxDB + Vector :ok_hand:
 
 ##  InfluxDB
 [InfluxDB](https://www.influxdata.com/products/influxdb-overview/) is open source time series database, purpose-built by InfluxData for monitoring metrics and events, provides real-time visibility into stacks, sensors, and systems. Use InfluxDB to capture, analyze, and store millions of points per second and much more.
