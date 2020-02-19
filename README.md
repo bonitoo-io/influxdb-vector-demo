@@ -62,6 +62,9 @@ The following matrix outlines how Vector metric types are mapped into InfluxDB L
 
 To check how documentation looks like see - [https://vector.dev/docs/reference/sinks/](https://vector.dev/docs/reference/sinks/)
 
+## Monitoring Logs with Vector and InfluxDB
+
+TBD
 
 ## Links
 - Vector Pull Request: [feat(new sink): Initial `influxdb_metrics` sink implementation](https://github.com/timberio/vector/pull/1759)
