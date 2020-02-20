@@ -141,11 +141,25 @@ The Apache log looks like:
 192.168.0.1 - - [10/Feb/2000:12:00:00 +0900] "GET / HTTP/1.1" 200 777
 ```    
 
-We use a [regex_parser](https://vector.dev/docs/reference/transforms/regex_parser/) to extract field's value for: host, user, timestamp, method, path, status and bytes_out.
+We use a [regex_parser](https://vector.dev/docs/reference/transforms/regex_parser/) to extract field's value for: `host`, `user`, `timestamp`, `method`, `path`, `status` and `bytes_out`.
 
 ```toml
 [transforms.regex_parser]
   inputs = ["syslog"]
   type = "regex_parser"
   regex = '^(?P<host>[\w\.]+) - (?P<user>[\w-]+) \[(?P<timestamp>.*)\] "(?P<method>[\w]+) (?P<path>.*)" (?P<status>[\d]+) (?P<bytes_out>[\d]+)$'
-```  
+```      
+
+Next step is calculate useful metrics. For that we need to transform `log event` into `metric event` by [log_to_metric](https://vector.dev/docs/reference/transforms/log_to_metric/). Let's calculate sum of outgoing bytes tagged by `method` and `status`:
+
+```toml
+[transforms.log_to_metric]
+  inputs = ["regex_parser"]
+  type = "log_to_metric" 
+
+[[transforms.log_to_metric.metrics]]
+  type = "counter"
+  increment_by_value = true
+  field = "bytes_out"
+  tags = {method = "{{method}}", status = "{{status}}"}
+``` 
