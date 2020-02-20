@@ -84,6 +84,8 @@ This tutorial assumes that you have account at [InfluxDB Cloud free tier](https:
 To simply setup our observability pipeline we will create a Dockerized environment. 
 The Apache HTTP Server and Vector will be run as a separate Docker container and communicate through [Docker bridge network](https://docs.docker.com/network/bridge/).  
 
+<img src="dockerized.png">
+
 So let's create and start a docker network:
 
 ```bash
@@ -91,8 +93,6 @@ docker network create -d bridge influx_network \
        --subnet 192.168.0.0/24 
        --gateway 192.168.0.1
 ```
-
-<img src="dockerized.png">
 
 ## Routes Apache log to Syslog
 
@@ -111,3 +111,20 @@ docker run \
 
 Now we are ready to check connection to your new Apache Web Server instance: [http://localhost:8080/](http://localhost:8080/).
 
+## Vector routing
+
+Vector has capabilities to ingesting a lot of types of [sources](https://vector.dev/docs/reference/sources/) into pipeline - [file](https://vector.dev/docs/reference/sources/file/), [journald](https://vector.dev/docs/reference/sources/journald/), [kafka](https://vector.dev/docs/reference/sources/kafka/)... 
+The *Sources* can both receive and pull in data. We want to use a source that receive data over the network via `syslog`
+
+### Syslog source
+
+[<img src="syslog-vector.png">](https://vector.dev/docs/reference/sources/syslog/)
+
+TBD:
+
+```toml
+[sources.syslog]
+  type = "syslog"
+  mode = "udp"
+  address = "0.0.0.0:5140"
+```

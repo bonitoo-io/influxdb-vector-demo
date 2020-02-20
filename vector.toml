@@ -21,15 +21,9 @@ data_dir = "/var/lib/vector"
 #  type = "stdin"
 
 [sources.syslog]
-  # REQUIRED - General
-  type = "syslog" # must be: "syslog"
-  mode = "udp" # example, enum
-
-  # OPTIONAL - Context
-  # host_key = "host" # default
-
-  # OPTIONAL - General
-  address = "0.0.0.0:5140" # example, no default, relevant when mode = "tcp" or mode = "udp"
+  type = "syslog"
+  mode = "udp"
+  address = "0.0.0.0:5140"
 
 #
 # Transform logs into metrics
