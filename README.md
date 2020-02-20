@@ -9,10 +9,6 @@
 1. **Programmable transforms** written in lua (or eventually wasm) that let you parse, filter, aggregate, and otherwise manipulate your data in arbitrary ways
 1. **Uncompromising performance** and efficiency that enables a huge variety of deployment strategies
 
-## Architecture
-
-<img src="data-model-metric.svg">
-
 ## InfluxDB Metrics Sink
 
 The Vector `influxdb_metrics` sink [batches](https://vector.dev/docs/meta/glossary/#batch) [metric](https://vector.dev/docs/about/data-model/metric/) events to InfluxDB using [v1](https://docs.influxdata.com/influxdb/latest/tools/api/#write-http-endpoint) or [v2](https://v2.docs.influxdata.com/v2.0/api/#tag/Write) HTTP API.
@@ -64,7 +60,18 @@ To check how documentation looks like see - [https://vector.dev/docs/reference/s
 
 ## Monitoring Logs with Vector and InfluxDB
 
-TBD
+[Vector](https://vector.dev) is highly reliable data router to take control of your observability data. 
+It's has possibility to collect, transform and route date by declarative way in one tool. 
+Vector is designed to follow `high reliability`, `operator safety` and `one tool` principles. 
+Engineering team uses Vector to tame observability pipelines.
+
+In this article I will describe how to monitor logs from [Apache HTTP Server](https://httpd.apache.org). Our observability pipeline will be used a [Syslog logging driver](https://docs.docker.com/config/containers/logging/syslog/) as a source of data. 
+
+This tutorial assumes that you have account at [InfluxDB Cloud free tier](https://www.influxdata.com/influxdb-cloud-pricing/).
+
+<img src="data-model-metric.svg">
+
+<sup>Architecture diagram from [Vector docs](https://vector.dev/docs/about/data-model/metric/): Data Model: Metric Event</sup>
 
 ## Links
 - Vector Pull Request: [feat(new sink): Initial `influxdb_metrics` sink implementation](https://github.com/timberio/vector/pull/1759)
