@@ -163,3 +163,23 @@ Next step is calculate useful metrics. For that we need to transform `log event`
   field = "bytes_out"
   tags = {method = "{{method}}", status = "{{status}}"}
 ``` 
+
+And what is final step? Push data into InfluxDB!
+
+### InfluxDB Sink
+
+The [influxdb_metrics](https://vector.dev/docs/reference/sinks/influxdb_metrics/) 
+batches metric events to InfluxDB using [v1](https://docs.influxdata.com/influxdb/latest/tools/api/#write-http-endpoint) 
+or [v2](https://v2.docs.influxdata.com/v2.0/api/#tag/Write) HTTP API. Configure InfluxDB sink to push data into [InfluxDB Cloud free tier](https://www.influxdata.com/influxdb-cloud-pricing/):
+ 
+
+```toml 
+[sinks.influxdb_2]
+  type = "influxdb_metrics"
+  inputs = ["log_to_metric"]
+  namespace = "vector"
+  endpoint = "https://us-west-2-1.aws.cloud2.influxdata.com"
+  org = "My Company"
+  bucket = "vector"
+  token = "jSc6rmToXkx6y8vOv1ruac4ZCvYNpGtGzHkrJsF84bi0q9olFjpV6h6yv1f5xNs26_cHVURarPIpd6Bklvfe-w=="
+```
