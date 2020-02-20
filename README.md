@@ -135,4 +135,17 @@ Now it's time to extract useful information from Apache Log into [metrics](https
 
 ### Transform logs
 
-TBD
+The Apache log looks like:
+
+```
+192.168.0.1 - - [10/Feb/2000:12:00:00 +0900] "GET / HTTP/1.1" 200 777
+```    
+
+We use a [regex_parser](https://vector.dev/docs/reference/transforms/regex_parser/) to extract field's value for: host, user, timestamp, method, path, status and bytes_out.
+
+```toml
+[transforms.regex_parser]
+  inputs = ["syslog"]
+  type = "regex_parser"
+  regex = '^(?P<host>[\w\.]+) - (?P<user>[\w-]+) \[(?P<timestamp>.*)\] "(?P<method>[\w]+) (?P<path>.*)" (?P<status>[\d]+) (?P<bytes_out>[\d]+)$'
+```  
