@@ -114,17 +114,25 @@ Now we are ready to check connection to your new Apache Web Server instance: [ht
 ## Vector routing
 
 Vector has capabilities to ingesting a lot of types of [sources](https://vector.dev/docs/reference/sources/) into pipeline - [file](https://vector.dev/docs/reference/sources/file/), [journald](https://vector.dev/docs/reference/sources/journald/), [kafka](https://vector.dev/docs/reference/sources/kafka/)... 
-The *Sources* can both receive and pull in data. We want to use a source that receive data over the network via `syslog`
+The *Sources* can both receive and pull in data. We want to use a source that receive data over the network via `syslog`.
 
-### Syslog source
+The whole pipeline is defined via `vector.toml` configuration file.
 
-[<img src="syslog-vector.png">](https://vector.dev/docs/reference/sources/syslog/)
+### Syslog Source
 
-TBD:
+The Vector `syslog` source ingests data through the Syslog protocol and outputs [log](https://vector.dev/docs/about/data-model/log/) events.
+
+Define Syslog source:
 
 ```toml
 [sources.syslog]
   type = "syslog"
   mode = "udp"
   address = "0.0.0.0:5140"
-```
+```  
+
+Now it's time to extract useful information from Apache Log into [metrics](https://vector.dev/docs/about/data-model/metric/).
+
+### Transform logs
+
+TBD
