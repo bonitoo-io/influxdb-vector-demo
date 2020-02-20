@@ -79,8 +79,12 @@ In this article I will describe how to monitor logs from [Apache HTTP Server](ht
 
 This tutorial assumes that you have account at [InfluxDB Cloud free tier](https://www.influxdata.com/influxdb-cloud-pricing/).
 
-## Dockerized 
-TBD 
+## Dockerized environment 
+
+To simply setup our observability pipeline we will create a Dockerized environment. 
+The Apache HTTP Server and Vector will be run as a separate Docker container and communicate through [Docker bridge network](https://docs.docker.com/network/bridge/).  
+
+<img src="dockerized.png">
 
 ## Routes Apache log to Syslog
 
