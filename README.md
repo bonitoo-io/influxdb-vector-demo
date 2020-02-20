@@ -116,7 +116,7 @@ Now we are ready to check connection to your new Apache Web Server instance: [ht
 Vector has capabilities to ingesting a lot of types of [sources](https://vector.dev/docs/reference/sources/) into pipeline - [file](https://vector.dev/docs/reference/sources/file/), [journald](https://vector.dev/docs/reference/sources/journald/), [kafka](https://vector.dev/docs/reference/sources/kafka/)... 
 The *Sources* can both receive and pull in data. We want to use a source that receive data over the network via `syslog`.
 
-The whole pipeline is defined via `vector.toml` configuration file.
+The whole Vector pipeline is defined via `vector.toml` configuration file.
 
 ### Syslog Source
 
@@ -170,8 +170,7 @@ And what is final step? Push data into InfluxDB!
 
 The [influxdb_metrics](https://vector.dev/docs/reference/sinks/influxdb_metrics/) 
 batches metric events to InfluxDB using [v1](https://docs.influxdata.com/influxdb/latest/tools/api/#write-http-endpoint) 
-or [v2](https://v2.docs.influxdata.com/v2.0/api/#tag/Write) HTTP API. Configure InfluxDB sink to push data into [InfluxDB Cloud free tier](https://www.influxdata.com/influxdb-cloud-pricing/):
- 
+or [v2](https://v2.docs.influxdata.com/v2.0/api/#tag/Write) HTTP API. Configure InfluxDB sink to push data into [InfluxDB 2 Cloud free tier](https://www.influxdata.com/influxdb-cloud-pricing/): 
 
 ```toml 
 [sinks.influxdb_2]
@@ -182,4 +181,58 @@ or [v2](https://v2.docs.influxdata.com/v2.0/api/#tag/Write) HTTP API. Configure 
   org = "My Company"
   bucket = "vector"
   token = "jSc6rmToXkx6y8vOv1ruac4ZCvYNpGtGzHkrJsF84bi0q9olFjpV6h6yv1f5xNs26_cHVURarPIpd6Bklvfe-w=="
+```     
+
+### Full configuration
+
+```toml
+#                                    __   __  __
+#                                    \ \ / / / /
+#                                     \ V / / /
+#                                      \_/  \/
+#
+#                                    V E C T O R
+#                                   Configuration
+#
+# ------------------------------------------------------------------------------
+# Website: https://vector.dev
+# Docs: https://vector.dev/docs/
+# ------------------------------------------------------------------------------
+
+data_dir = "/var/lib/vector"
+
+[sources.syslog]
+  type = "syslog"
+  mode = "udp"
+  address = "0.0.0.0:5140"
+
+#
+# Transform logs into metrics
+#
+[transforms.regex_parser]
+  inputs = ["syslog"]
+  type = "regex_parser"
+  regex = '^(?P<host>[\w\.]+) - (?P<user>[\w-]+) \[(?P<timestamp>.*)\] "(?P<method>[\w]+) (?P<path>.*)" (?P<status>[\d]+) (?P<bytes_out>[\d]+)$'
+
+[transforms.log_to_metric]
+  inputs = ["regex_parser"]
+  type = "log_to_metric"
+
+[[transforms.log_to_metric.metrics]]
+  type = "counter"
+  increment_by_value = true
+  field = "bytes_out"
+  tags = {method = "{{method}}", status = "{{status}}"}
+
+#
+# Output data into InfluxDB 2
+#
+[sinks.influxdb_2]
+  type = "influxdb_metrics"
+  inputs = ["log_to_metric"]
+  namespace = "vector"
+  endpoint = "http://influxdb.v2:9999"
+  org = "my-org"
+  bucket = "my-bucket"
+  token = "my-token"
 ```

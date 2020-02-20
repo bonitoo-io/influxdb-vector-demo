@@ -11,14 +11,7 @@
 # Docs: https://vector.dev/docs/
 # ------------------------------------------------------------------------------
 
-# Note: A full config spec is located at ./vector.spec.toml and examples
-#       in the ./examples folder.
-
 data_dir = "/var/lib/vector"
-
-# Input data. Change me to a valid input source.
-#[sources.in]
-#  type = "stdin"
 
 [sources.syslog]
   type = "syslog"
@@ -55,7 +48,3 @@ data_dir = "/var/lib/vector"
   bucket = "my-bucket"
   token = "my-token"
 
-#[sinks.out]
-#  inputs   = ["syslog"]
-#  type     = "console"
-#  encoding = "text"
