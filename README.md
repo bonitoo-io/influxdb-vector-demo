@@ -194,6 +194,13 @@ or [v2](https://v2.docs.influxdata.com/v2.0/api/#tag/Write) HTTP API. Configure 
 #                                    V E C T O R
 #                                   Configuration
 #
+# ------------------------------------------------------------------------------
+# Website: https://vector.dev
+# Docs: https://vector.dev/docs/
+# ------------------------------------------------------------------------------
+  
+#
+# Incoming Syslog Source
 #
 [sources.syslog]
   type = "syslog"
