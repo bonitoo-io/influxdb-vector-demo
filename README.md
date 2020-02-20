@@ -58,20 +58,40 @@ The following matrix outlines how Vector metric types are mapped into InfluxDB L
 
 To check how documentation looks like see - [https://vector.dev/docs/reference/sinks/](https://vector.dev/docs/reference/sinks/)
 
-## Monitoring Logs with Vector and InfluxDB
+# Monitoring Logs with Vector and InfluxDB
 
 [Vector](https://vector.dev) is highly reliable data router to take control of your observability data. 
 It's has possibility to collect, transform and route date by declarative way in one tool. 
 Vector is designed to follow `high reliability`, `operator safety` and `one tool` principles. 
 Engineering team uses Vector to tame observability pipelines.
 
-In this article I will describe how to monitor logs from [Apache HTTP Server](https://httpd.apache.org). Our observability pipeline will be used a [Syslog logging driver](https://docs.docker.com/config/containers/logging/syslog/) as a source of data. 
-
-This tutorial assumes that you have account at [InfluxDB Cloud free tier](https://www.influxdata.com/influxdb-cloud-pricing/).
+In this article I will describe how to monitor logs from [Apache HTTP Server](https://httpd.apache.org). Our observability pipeline will be use a [Syslog Source](https://vector.dev/docs/reference/sources/syslog/) to ingests data through the Syslog protocol. 
 
 <img src="data-model-metric.svg">
 
 <sup>Architecture diagram from [Vector docs](https://vector.dev/docs/about/data-model/metric/): Data Model: Metric Event</sup>
+
+This tutorial assumes that you have account at [InfluxDB Cloud free tier](https://www.influxdata.com/influxdb-cloud-pricing/).
+
+## Dockerized 
+TBD 
+
+## Routes Apache log to Syslog
+
+The Docker has [multiple](https://docs.docker.com/config/containers/logging/configure/#supported-logging-drivers) logging mechanisms to help get logs from running services to correct destination. We configure our dockerized Apache to use the [Syslog logging driver](https://docs.docker.com/config/containers/logging/syslog/):
+
+```bash   
+docker run \
+       --detach \
+       --name web \
+       --network influx_network \
+       --publish 8080:80 \
+       --log-driver=syslog\
+       --log-opt syslog-address=udp://localhost:5140 \
+       httpd
+```                      
+
+Now we are ready to check connection to your new Apache Web Server instance: [http://localhost:8080/](http://localhost:8080/).
 
 ## Links
 - Vector Pull Request: [feat(new sink): Initial `influxdb_metrics` sink implementation](https://github.com/timberio/vector/pull/1759)
