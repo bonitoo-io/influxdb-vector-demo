@@ -56,6 +56,12 @@ The following matrix outlines how Vector metric types are mapped into InfluxDB L
 
 ### Showcase
 
+### Links
+- Vector Pull Request: [feat(new sink): Initial `influxdb_metrics` sink implementation](https://github.com/timberio/vector/pull/1759)
+- [InfluxDB](https://www.influxdata.com/products/influxdb-overview/)
+- [What is Vector?](https://vector.dev/blog/introducing-vector/#what-is-vector)
+- [Vector Metrics Model](https://vector.dev/docs/about/data-model/metric/)
+
 To check how documentation looks like see - [https://vector.dev/docs/reference/sinks/](https://vector.dev/docs/reference/sinks/)
 
 # Monitoring Logs with Vector and InfluxDB
@@ -93,8 +99,3 @@ docker run \
 
 Now we are ready to check connection to your new Apache Web Server instance: [http://localhost:8080/](http://localhost:8080/).
 
-## Links
-- Vector Pull Request: [feat(new sink): Initial `influxdb_metrics` sink implementation](https://github.com/timberio/vector/pull/1759)
-- [InfluxDB](https://www.influxdata.com/products/influxdb-overview/)
-- [What is Vector?](https://vector.dev/blog/introducing-vector/#what-is-vector)
-- [Vector Metrics Model](https://vector.dev/docs/about/data-model/metric/)
