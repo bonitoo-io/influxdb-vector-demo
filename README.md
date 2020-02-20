@@ -185,9 +185,15 @@ or [v2](https://v2.docs.influxdata.com/v2.0/api/#tag/Write) HTTP API. Configure 
 
 ### Full configuration
 
-```toml 
+```toml
+#                                    __   __  __
+#                                    \ \ / / / /
+#                                     \ V / / /
+#                                      \_/  \/
 #
-# Incoming Syslog Source
+#                                    V E C T O R
+#                                   Configuration
+#
 #
 [sources.syslog]
   type = "syslog"
