@@ -84,6 +84,14 @@ This tutorial assumes that you have account at [InfluxDB Cloud free tier](https:
 To simply setup our observability pipeline we will create a Dockerized environment. 
 The Apache HTTP Server and Vector will be run as a separate Docker container and communicate through [Docker bridge network](https://docs.docker.com/network/bridge/).  
 
+So let's create and start a docker network:
+
+```bash
+docker network create -d bridge influx_network \
+       --subnet 192.168.0.0/24 
+       --gateway 192.168.0.1
+```
+
 <img src="dockerized.png">
 
 ## Routes Apache log to Syslog
