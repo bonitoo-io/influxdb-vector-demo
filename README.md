@@ -185,22 +185,10 @@ or [v2](https://v2.docs.influxdata.com/v2.0/api/#tag/Write) HTTP API. Configure 
 
 ### Full configuration
 
-```toml
-#                                    __   __  __
-#                                    \ \ / / / /
-#                                     \ V / / /
-#                                      \_/  \/
+```toml 
 #
-#                                    V E C T O R
-#                                   Configuration
+# Incoming Syslog Source
 #
-# ------------------------------------------------------------------------------
-# Website: https://vector.dev
-# Docs: https://vector.dev/docs/
-# ------------------------------------------------------------------------------
-
-data_dir = "/var/lib/vector"
-
 [sources.syslog]
   type = "syslog"
   mode = "udp"
