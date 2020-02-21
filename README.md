@@ -248,10 +248,42 @@ Run the Vector Docker image with our `vector.tml`:
 
 ```bash
 docker run \
-       --detach \
        --name vector \
        --network influx_network \
        --publish 5140:5140/udp \
        --volume "${PWD}"/vector.toml:/etc/vector/vector.toml:ro \
        timberio/vector:nightly-2020-02-19-alpine
+```    
+
+## Visualize metrics in InfluxDB
+
+<img src="bytes-out.png">
+
+```flux
+from(bucket: "vector")
+  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+  |> filter(fn: (r) => r._measurement == "vector.bytes_out")
+  |> filter(fn: (r) => r._field == "value")
 ```
+
+<img src="total-bytes-out.png">
+
+```flux  
+from(bucket: "vector")
+  |> range(start: 0)
+  |> filter(fn: (r) => r._measurement == "vector.bytes_out")
+  |> filter(fn: (r) => r._field == "value") 
+  |> toInt()
+  |> sum(column: "_value")
+  |> map(fn: (r) => ({ r with _value: r._value / 1024 }))
+```
+
+<img src="requests.png">
+
+```flux
+from(bucket: "vector")
+  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+  |> filter(fn: (r) => r._measurement == "vector.bytes_out")
+```
+
+<img src="dashboard.gif">
