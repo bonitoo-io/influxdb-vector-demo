@@ -287,3 +287,4 @@ from(bucket: "vector")
 ```
 
 <img src="dashboard.gif">
+<img src="ezgif.com-gif-maker.gif">
