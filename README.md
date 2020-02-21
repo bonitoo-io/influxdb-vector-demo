@@ -122,7 +122,7 @@ The whole Vector pipeline is defined via `vector.toml` configuration file.
 
 The Vector `syslog` source ingests data through the Syslog protocol and outputs [log](https://vector.dev/docs/about/data-model/log/) events.
 
-Define Syslog source:
+Define Syslog source that listen on port 5140:
 
 ```toml
 [sources.syslog]
@@ -170,7 +170,7 @@ And what is final step? Push data into InfluxDB!
 
 The [influxdb_metrics](https://vector.dev/docs/reference/sinks/influxdb_metrics/) 
 batches metric events to InfluxDB using [v1](https://docs.influxdata.com/influxdb/latest/tools/api/#write-http-endpoint) 
-or [v2](https://v2.docs.influxdata.com/v2.0/api/#tag/Write) HTTP API. Configure InfluxDB sink to push data into [InfluxDB 2 Cloud free tier](https://www.influxdata.com/influxdb-cloud-pricing/): 
+or [v2](https://v2.docs.influxdata.com/v2.0/api/#tag/Write) HTTP API. Let's configure InfluxDB sink to push data into [InfluxDB 2 Cloud free tier](https://www.influxdata.com/influxdb-cloud-pricing/): 
 
 ```toml 
 [sinks.influxdb_2]
@@ -200,7 +200,7 @@ or [v2](https://v2.docs.influxdata.com/v2.0/api/#tag/Write) HTTP API. Configure 
 # ------------------------------------------------------------------------------
   
 #
-# Incoming Syslog Source
+# Incoming Syslog source
 #
 [sources.syslog]
   type = "syslog"
@@ -232,8 +232,26 @@ or [v2](https://v2.docs.influxdata.com/v2.0/api/#tag/Write) HTTP API. Configure 
   type = "influxdb_metrics"
   inputs = ["log_to_metric"]
   namespace = "vector"
-  endpoint = "http://influxdb.v2:9999"
-  org = "my-org"
-  bucket = "my-bucket"
-  token = "my-token"
+  endpoint = "https://us-west-2-1.aws.cloud2.influxdata.com"
+  org = "My Company"
+  bucket = "vector"
+  token = "jSc6rmToXkx6y8vOv1ruac4ZCvYNpGtGzHkrJsF84bi0q9olFjpV6h6yv1f5xNs26_cHVURarPIpd6Bklvfe-w=="
+```       
+
+## Bring Vector's pipeline to live
+
+The Vector supports wide range of platform. You are able to run Vector on Windows, Linux, MacOS, ARMs and also provides packages for popular
+managers as [DPKG](https://vector.dev/docs/setup/installation/package-managers/dpkg/), [Homebrew](https://vector.dev/docs/setup/installation/package-managers/homebrew/), [RPM](https://vector.dev/docs/setup/installation/package-managers/rpm/) and so on.
+We will use [Docker](https://vector.dev/docs/setup/installation/containers/docker/) image available on [Docker Hub](https://hub.docker.com/r/timberio/vector).
+
+Run the Vector Docker image with our `vector.tml`:
+
+```bash
+docker run \
+       --detach \
+       --name vector \
+       --network influx_network \
+       --publish 5140:5140/udp \
+       --volume "${PWD}"/vector.toml:/etc/vector/vector.toml:ro \
+       timberio/vector:nightly-2020-02-19-alpine
 ```
