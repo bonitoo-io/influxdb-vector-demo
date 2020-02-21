@@ -291,3 +291,14 @@ from(bucket: "vector")
 and result should looks like:
 
 <img src="dashboard.gif">
+
+## Conclusion
+
+The Vector together with InfluxDB is powefull tool set to handle observability pipelines. 
+In this example we just cover only small piece of Vector possibilities. What about scripting in your pipelines? 
+Yes - just use [lua](https://vector.dev/docs/reference/transforms/lua/) transformer. 
+Geolocation of your logs? Yes - just use [geoip](https://vector.dev/docs/reference/transforms/geoip/) transformer. 
+
+The script that run everything together can be found [here](https://github.com/bonitoo-io/influxdb-vector-demo/blob/master/run-demo.sh).  
+
+As always, if you run into hurdles, please share them on our [community site](https://community.influxdata.com/) or [Slack](https://influxcommunity.slack.com/join/shared_invite/enQtNjA4MTM2NDgyNDUwLTUxMDAzNmM1YzJmOTNhMGE0ZjI2NzUxNzE4YjQ2OTY3MjVhNDlkNzFlMTZiZGJiOTIyNGE1ZDY3MGFmY2Q0OWE) channel. We’d love to get your feedback and help you with any problems you run into.
