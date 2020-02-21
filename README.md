@@ -257,6 +257,8 @@ docker run \
 
 ## Visualize metrics in InfluxDB
 
+Now it’s time to create some charts. To do this, log in into InfluxDB and create Dashboard cells with flowing Flux queries:
+
 <img src="bytes-out.png">
 
 ```flux
@@ -286,6 +288,6 @@ from(bucket: "vector")
   |> filter(fn: (r) => r._measurement == "vector.bytes_out")
 ```
 
-<img src="dashboard.gif">
+and result should looks like:
 
-<img src="ezgif.com-gif-maker.gif">
+<img src="dashboard.gif">
