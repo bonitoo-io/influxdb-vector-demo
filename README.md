@@ -301,4 +301,4 @@ Geolocation of your logs? Yes - just use [geoip](https://vector.dev/docs/referen
 
 As always, if you run into hurdles, please share them on our [community site](https://community.influxdata.com/) or [Slack](https://influxcommunity.slack.com/join/shared_invite/enQtNjA4MTM2NDgyNDUwLTUxMDAzNmM1YzJmOTNhMGE0ZjI2NzUxNzE4YjQ2OTY3MjVhNDlkNzFlMTZiZGJiOTIyNGE1ZDY3MGFmY2Q0OWE) channel. We’d love to get your feedback and help you with any problems you run into.
 
-The script that run everything together can be found [here](https://github.com/bonitoo-io/influxdb-vector-demo/blob/master/run-demo.sh).
+The script that run everything together can be found [here](https://github.com/bonitoo-io/influxdb-vector-demo/blob/master/run-demo.sh) and exported InfluxDB dashboard [here](https://github.com/bonitoo-io/influxdb-vector-demo/blob/master/monitoring_logs_with_vector_and_influxdb.json).

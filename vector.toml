@@ -47,5 +47,7 @@ data_dir = "/var/lib/vector"
   org = "my-org"
   bucket = "my-bucket"
   token = "my-token"
+  
+[sinks.influxdb_2.request]
   rate_limit_num = 1000
 
