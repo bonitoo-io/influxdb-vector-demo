@@ -43,7 +43,7 @@ A `metric` event represents a numerical operation to a time series. Operations o
 
 #### Why Not Just Events?
 
-Existing services usually emit metrics, traces, and logs of varying quality. By designing Vector to meet services where they are (current state), we serve as a bridge to newer standards. This is why we place "events" at the top of our data model, where logs and metrics are derived (traces coming soon).
+Existing services usually emit metrics, traces, and logs of varying quality. By designing Vector to meet services where they are (current state), Vector serve as a bridge to newer standards. This is why Vector place "events" at the top of data model, where logs and metrics are derived (traces coming soon).
 
 ### InfluxDB Metrics Sink
 
