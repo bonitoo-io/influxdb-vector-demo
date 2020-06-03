@@ -249,7 +249,7 @@ Define Syslog source that listen on port 5140:
   address = "0.0.0.0:5140"
 ```  
 
-Now it's time to extract useful information from Apache Log into [metrics](https://vector.dev/docs/about/data-model/metric/).
+Now it's time to extract useful information from Apache Log into [events](https://vector.dev/docs/about/data-model/).
 
 ### Transform logs
 
@@ -284,17 +284,43 @@ Next step is calculate useful metrics. For that we need to transform `log event`
 
 And what is final step? Push data into InfluxDB!
 
-### InfluxDB Sink
+### InfluxDB Sinks
+
+Let's configure InfluxDB sinks to push data into [InfluxDB 2 Cloud free tier](https://www.influxdata.com/influxdb-cloud-pricing/).
+
+#### Logs
+
+The [influxdb_logs](https://vector.dev/docs/reference/sinks/influxdb_logs/) batches log events to InfluxDB using [v1](https://docs.influxdata.com/influxdb/latest/tools/api/#write-http-endpoint) or
+[v2](https://v2.docs.influxdata.com/v2.0/api/#tag/Write) HTTP API.
+
+The `regex_parser` produces log events with extracted fields. So we will configure the `regex_parser` as an input to our sink and fields: `method`, `path` as tags for outgoing LineProtocol.
+
+```toml
+[sinks.influxdb_2_logs]
+  type = "influxdb_logs"
+  inputs = ["regex_parser"]
+  namespace = "vector-logs"
+  tags = ["method", "path"]
+  namespace = "vector-metrics"
+  endpoint = "https://us-west-2-1.aws.cloud2.influxdata.com"
+  org = "My Company"
+  bucket = "vector"
+  token = "jSc6rmToXkx6y8vOv1ruac4ZCvYNpGtGzHkrJsF84bi0q9olFjpV6h6yv1f5xNs26_cHVURarPIpd6Bklvfe-w=="
+``` 
+
+#### Metrics
 
 The [influxdb_metrics](https://vector.dev/docs/reference/sinks/influxdb_metrics/) 
 batches metric events to InfluxDB using [v1](https://docs.influxdata.com/influxdb/latest/tools/api/#write-http-endpoint) 
-or [v2](https://v2.docs.influxdata.com/v2.0/api/#tag/Write) HTTP API. Let's configure InfluxDB sink to push data into [InfluxDB 2 Cloud free tier](https://www.influxdata.com/influxdb-cloud-pricing/): 
+or [v2](https://v2.docs.influxdata.com/v2.0/api/#tag/Write) HTTP API. 
+
+As an input for `influxdb_metrics` we will use aggregated metrics by `log_to_metric` transformer.
 
 ```toml 
-[sinks.influxdb_2]
+[sinks.influxdb_2_metrics]
   type = "influxdb_metrics"
   inputs = ["log_to_metric"]
-  namespace = "vector"
+  namespace = "vector-metrics"
   endpoint = "https://us-west-2-1.aws.cloud2.influxdata.com"
   org = "My Company"
   bucket = "vector"
@@ -438,7 +464,7 @@ from(bucket: "vector")
 
 and result should looks like:
 
-<img src="dashboard.gif">
+<img src="dashboard.png">
 
 ## Conclusion
 
