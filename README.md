@@ -9,11 +9,47 @@
 1. **Programmable transforms** written in lua (or eventually wasm) that let you parse, filter, aggregate, and otherwise manipulate your data in arbitrary ways
 1. **Uncompromising performance** and efficiency that enables a huge variety of deployment strategies
 
-## InfluxDB Metrics Sink
+### Data Model
+
+The individual pieces of data flowing through Vector are known as events. Events are arbitrarily wide, and deep, structured pieces of data. There are two types of events: `log` and `metric`.
+
+#### Log
+A `log` event is a structured represention of a point-in-time event. It contains an arbitrary set of fields (key/value pairs) that describe the event.
+
+```json
+{
+  "host": "my.host.com",
+  "message": "<13>Feb 13 20:07:26 74794bfb6795 root[8539]: i am foobar",
+  "timestamp": "2019-11-01T21:15:47+00:00"
+}
+```
+
+#### Metric
+A `metric` event represents a numerical operation to a time series. Operations offered are heavily inspired by the StatsD and Prometheus models, and determine the schema of the metric structure within Vector.
+
+```json
+{
+  "name": "login.count",
+  "timestamp": "2019-11-01T21:15:47+00:00",
+  "kind": "absolute",
+  "tags": {
+    "host": "my.host.com"
+  },
+  "counter": {
+    "value": 24.2
+  }
+}
+```
+
+#### Why Not Just Events?
+
+Existing services usually emit metrics, traces, and logs of varying quality. By designing Vector to meet services where they are (current state), we serve as a bridge to newer standards. This is why we place "events" at the top of our data model, where logs and metrics are derived (traces coming soon).
+
+### InfluxDB Metrics Sink
 
 The Vector `influxdb_metrics` sink [batches](https://vector.dev/docs/meta/glossary/#batch) [metric](https://vector.dev/docs/about/data-model/metric/) events to InfluxDB using [v1](https://docs.influxdata.com/influxdb/latest/tools/api/#write-http-endpoint) or [v2](https://v2.docs.influxdata.com/v2.0/api/#tag/Write) HTTP API.
 
-### Vector Metric Types
+#### Vector Metric Types
 
 InfluxDB uses [line protocol](https://v2.docs.influxdata.com/v2.0/reference/syntax/line-protocol/) to write data points. It is a text-based format that provides the measurement, tag set, field set, and timestamp of a data point.
 
@@ -28,9 +64,9 @@ The following matrix outlines how Vector metric types are mapped into InfluxDB L
 | [Summary](https://vector.dev/docs/about/data-model/metric/#aggregated_summary)        | quantiles, count, sum                            | `ns.requests_sum,metric_type=summary,normal_tag=value,true_tag=true count=6i,quantile_0.01=1.5,quantile_0.5=2,quantile_0.99=3,sum=12 1542182950000000011` |
 | [Distribution](https://vector.dev/docs/about/data-model/metric/#distribution)         | min, max, median, avg, sum, count, quantile 0.95 | `ns.sparse_stats,metric_type=distribution avg=3,count=10,max=4,median=3,min=1,quantile_0.95=4,sum=30 1542182950000000011`                                 |
 
-### Configuration example
+#### Configuration example
 
-#### InfluxDB v1
+##### InfluxDB v1
 ```toml
 [sinks.my_sink_id]
   type = "influxdb_metrics"
@@ -43,7 +79,7 @@ The following matrix outlines how Vector metric types are mapped into InfluxDB L
   password = "${INFLUXDB_PASSWORD_ENV_VAR}"
 ```
 
-#### InfluxDB v2
+##### InfluxDB v2
 ```toml
 [sinks.my_sink_id]
   type = "influxdb_metrics"
@@ -54,13 +90,12 @@ The following matrix outlines how Vector metric types are mapped into InfluxDB L
   token = "${INFLUXDB_TOKEN_ENV_VAR}"
 ```  
 
-### Showcase
-
 ### Links
-- Vector Pull Request: [feat(new sink): Initial `influxdb_metrics` sink implementation](https://github.com/timberio/vector/pull/1759)
-- [InfluxDB](https://www.influxdata.com/products/influxdb-overview/)
 - [What is Vector?](https://vector.dev/blog/introducing-vector/#what-is-vector)
-- [Vector Metrics Model](https://vector.dev/docs/about/data-model/metric/)
+- Vector PRs:
+  - [feat(new sink): Initial `influxdb_metrics` sink implementation](https://github.com/timberio/vector/pull/1759)
+  - [feat(new sink): Initial `influxdb_logs` sink implementation](https://github.com/timberio/vector/pull/2474)
+- [InfluxDB](https://www.influxdata.com/products/influxdb-overview/)
 
 To check how documentation looks like see - [https://vector.dev/docs/reference/sinks/](https://vector.dev/docs/reference/sinks/)
 
