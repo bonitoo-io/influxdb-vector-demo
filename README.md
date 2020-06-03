@@ -301,7 +301,6 @@ The `regex_parser` produces log events with extracted fields. So we will configu
   inputs = ["regex_parser"]
   namespace = "vector-logs"
   tags = ["method", "path"]
-  namespace = "vector-metrics"
   endpoint = "https://us-west-2-1.aws.cloud2.influxdata.com"
   org = "My Company"
   bucket = "vector"
@@ -377,7 +376,6 @@ As an input for `influxdb_metrics` we will use aggregated metrics by `log_to_met
   inputs = ["regex_parser"]
   namespace = "vector-logs"
   tags = ["appname", "method", "path"]
-  namespace = "vector-metrics"
   endpoint = "https://us-west-2-1.aws.cloud2.influxdata.com"
   org = "My Company"
   bucket = "vector"
