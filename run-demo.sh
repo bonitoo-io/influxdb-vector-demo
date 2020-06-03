@@ -43,11 +43,13 @@ docker network create -d bridge influx_network --subnet 192.168.0.0/24 --gateway
 ##
 ## Start InfluxDB 2
 ##
+docker pull quay.io/influxdb/influxdb:2.0.0-beta
 docker run \
        --detach \
        --name influxdb.v2 \
        --network influx_network \
        --publish 9999:9999 \
+       --volume "${SCRIPT_PATH}":/usr/src/app/ \
        quay.io/influxdb/influxdb:2.0.0-beta
 
 echo "Wait to start InfluxDB 2.0"
@@ -71,7 +73,7 @@ docker run \
        --network influx_network \
        --publish 5140:5140/udp \
        --volume "${SCRIPT_PATH}"/vector.toml:/etc/vector/vector.toml:ro \
-       timberio/vector:nightly-2020-02-19-alpine
+       timberio/vector:nightly-2020-06-02-alpine
 
 ##
 ## Start WebApp
@@ -99,5 +101,10 @@ docker run \
         --volume "${SCRIPT_PATH}"/ab/urls.txt:/tmp/urls.txt \
         --volume "${SCRIPT_PATH}"/ab/load.sh:/tmp/load.sh \
         russmckendrick/ab bash /tmp/load.sh
+
+##
+## Import InfluxDB template
+##
+docker exec influxdb.v2 /usr/src/app/template-import.sh
 
 docker logs -f vector
