@@ -45,7 +45,83 @@ A `metric` event represents a numerical operation to a time series. Operations o
 
 Existing services usually emit metrics, traces, and logs of varying quality. By designing Vector to meet services where they are (current state), Vector serve as a bridge to newer standards. This is why Vector place "events" at the top of data model, where logs and metrics are derived (traces coming soon).
 
+### InfluxDB Logs Sink
+
+> [official docs](https://vector.dev/docs/reference/sinks/influxdb_logs/)
+
+The Vector `influxdb_logs` sink
+[batches](https://vector.dev/docs/reference/sinks/influxdb_logs/#buffers--batches) [`log`](https://vector.dev/docs/about/data-model/log/) events to
+[InfluxDB](https://www.influxdata.com/products/influxdb-overview/) using [v1](https://docs.influxdata.com/influxdb/latest/tools/api/#write-http-endpoint) or
+[v2](https://v2.docs.influxdata.com/v2.0/api/#tag/Write) HTTP API.
+
+#### Mapping Log Event into Line Protocol
+
+InfluxDB uses [line protocol](https://v2.docs.influxdata.com/v2.0/reference/syntax/line-protocol/) to write data points. It is a text-based format that provides the measurement, tag set, field set, and timestamp of a data point.
+
+A `Log Event` event contains an arbitrary set of fields (key/value pairs) that describe the event.
+
+The following matrix outlines how Log Event fields are mapped into InfluxDB Line Protocol:
+
+| Field         | Line Protocol     |                                                                                                                                               
+|---------------|-------------------|
+| host          | tag               |
+| message       | field             |
+| source_type   | tag               |
+| timestamp     | timestamp         |
+| [custom-key]  | field             |
+
+The default behaviour could be overridden by a [`tags`](https://vector.dev/docs/reference/sinks/influxdb_logs/#tags) configuration.
+
+##### Mapping example
+
+The following example shows how is `Log Event` mapped into `Line Protocol`:
+
+###### Log Event
+
+```js
+{
+  "host": "my.host.com",
+  "message": "<13>Feb 13 20:07:26 74794bfb6795 root[8539]: i am foobar",
+  "timestamp": "2019-11-01T21:15:47+00:00",
+  "custom_field": "custom_value"
+}
+```
+
+###### Line Protocol
+
+```influxdb_line_protocol
+ns.vector,host=my.host.com,metric_type=logs custom_field="custom_value",message="<13>Feb 13 20:07:26 74794bfb6795 root[8539]: i am foobar" 1572642947000000000
+```
+
+#### Configuration example
+
+##### InfluxDB v1
+```toml
+[sinks.my_sink_id]
+  type = "influxdb_logs"
+  namespace = "service"
+  endpoint = "https://us-west-2-1.aws.cloud1.influxdata.com"
+  database = "vector-database"
+  consistency = "one"
+  retention_policy_name = "one_day_only"
+  username = "vector-source"
+  password = "${INFLUXDB_PASSWORD_ENV_VAR}"
+```
+
+##### InfluxDB v2
+```toml
+[sinks.my_sink_id]
+  type = "influxdb_logs"
+  namespace = "service"
+  endpoint = "https://us-west-2-1.aws.cloud2.influxdata.com"
+  org = "my-org"
+  bucket = "my-bucket"
+  token = "${INFLUXDB_TOKEN_ENV_VAR}"
+``` 
+
 ### InfluxDB Metrics Sink
+
+> [official docs](https://vector.dev/docs/reference/sinks/influxdb_metrics/)
 
 The Vector `influxdb_metrics` sink [batches](https://vector.dev/docs/meta/glossary/#batch) [metric](https://vector.dev/docs/about/data-model/metric/) events to InfluxDB using [v1](https://docs.influxdata.com/influxdb/latest/tools/api/#write-http-endpoint) or [v2](https://v2.docs.influxdata.com/v2.0/api/#tag/Write) HTTP API.
 
@@ -96,8 +172,6 @@ The following matrix outlines how Vector metric types are mapped into InfluxDB L
   - [feat(new sink): Initial `influxdb_metrics` sink implementation](https://github.com/timberio/vector/pull/1759)
   - [feat(new sink): Initial `influxdb_logs` sink implementation](https://github.com/timberio/vector/pull/2474)
 - [InfluxDB](https://www.influxdata.com/products/influxdb-overview/)
-
-To check how documentation looks like see - [https://vector.dev/docs/reference/sinks/](https://vector.dev/docs/reference/sinks/)
 
 # Monitoring Logs with Vector and InfluxDB
 
