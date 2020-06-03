@@ -1,6 +1,15 @@
 # InfluxDB + Vector :ok_hand:
 
-##  InfluxDB
+- [InfluxDB](#influxdb)
+- [Vector](#vector)
+    - [Data Model](#data-model)
+    - [InfluxDB Logs Sink](#influxdb-logs-sink)
+    - [InfluxDB Metrics Sink](#influxdb-metrics-sink)
+- [Monitoring Logs with Vector and InfluxDB](#monitoring-logs-with-vector-and-influxdb)
+    - [Full configuration](#full-configuration)
+    - [Conclusion](#conclusion)
+
+## InfluxDB
 [InfluxDB](https://www.influxdata.com/products/influxdb-overview/) is open source time series database, purpose-built by InfluxData for monitoring metrics and events, provides real-time visibility into stacks, sensors, and systems. Use InfluxDB to capture, analyze, and store millions of points per second and much more.
 
 ## Vector
@@ -45,7 +54,7 @@ A `metric` event represents a numerical operation to a time series. Operations o
 
 Existing services usually emit metrics, traces, and logs of varying quality. By designing Vector to meet services where they are (current state), Vector serve as a bridge to newer standards. This is why Vector place "events" at the top of data model, where logs and metrics are derived (traces coming soon).
 
-### InfluxDB Logs Sink
+## InfluxDB Logs Sink
 
 > [official docs](https://vector.dev/docs/reference/sinks/influxdb_logs/)
 
@@ -54,7 +63,7 @@ The Vector `influxdb_logs` sink
 [InfluxDB](https://www.influxdata.com/products/influxdb-overview/) using [v1](https://docs.influxdata.com/influxdb/latest/tools/api/#write-http-endpoint) or
 [v2](https://v2.docs.influxdata.com/v2.0/api/#tag/Write) HTTP API.
 
-#### Mapping Log Event into Line Protocol
+### Mapping Log Event into Line Protocol
 
 InfluxDB uses [line protocol](https://v2.docs.influxdata.com/v2.0/reference/syntax/line-protocol/) to write data points. It is a text-based format that provides the measurement, tag set, field set, and timestamp of a data point.
 
@@ -72,11 +81,11 @@ The following matrix outlines how Log Event fields are mapped into InfluxDB Line
 
 The default behaviour could be overridden by a [`tags`](https://vector.dev/docs/reference/sinks/influxdb_logs/#tags) configuration.
 
-##### Mapping example
+#### Mapping example
 
 The following example shows how is `Log Event` mapped into `Line Protocol`:
 
-###### Log Event
+##### Log Event
 
 ```js
 {
@@ -87,15 +96,15 @@ The following example shows how is `Log Event` mapped into `Line Protocol`:
 }
 ```
 
-###### Line Protocol
+##### Line Protocol
 
 ```influxdb_line_protocol
 ns.vector,host=my.host.com,metric_type=logs custom_field="custom_value",message="<13>Feb 13 20:07:26 74794bfb6795 root[8539]: i am foobar" 1572642947000000000
 ```
 
-#### Configuration example
+### Configuration example
 
-##### InfluxDB v1
+#### InfluxDB v1
 ```toml
 [sinks.my_sink_id]
   type = "influxdb_logs"
@@ -108,7 +117,7 @@ ns.vector,host=my.host.com,metric_type=logs custom_field="custom_value",message=
   password = "${INFLUXDB_PASSWORD_ENV_VAR}"
 ```
 
-##### InfluxDB v2
+#### InfluxDB v2
 ```toml
 [sinks.my_sink_id]
   type = "influxdb_logs"
@@ -119,13 +128,13 @@ ns.vector,host=my.host.com,metric_type=logs custom_field="custom_value",message=
   token = "${INFLUXDB_TOKEN_ENV_VAR}"
 ``` 
 
-### InfluxDB Metrics Sink
+## InfluxDB Metrics Sink
 
 > [official docs](https://vector.dev/docs/reference/sinks/influxdb_metrics/)
 
 The Vector `influxdb_metrics` sink [batches](https://vector.dev/docs/meta/glossary/#batch) [metric](https://vector.dev/docs/about/data-model/metric/) events to InfluxDB using [v1](https://docs.influxdata.com/influxdb/latest/tools/api/#write-http-endpoint) or [v2](https://v2.docs.influxdata.com/v2.0/api/#tag/Write) HTTP API.
 
-#### Vector Metric Types
+### Vector Metric Types
 
 InfluxDB uses [line protocol](https://v2.docs.influxdata.com/v2.0/reference/syntax/line-protocol/) to write data points. It is a text-based format that provides the measurement, tag set, field set, and timestamp of a data point.
 
@@ -140,9 +149,9 @@ The following matrix outlines how Vector metric types are mapped into InfluxDB L
 | [Summary](https://vector.dev/docs/about/data-model/metric/#aggregated_summary)        | quantiles, count, sum                            | `ns.requests_sum,metric_type=summary,normal_tag=value,true_tag=true count=6i,quantile_0.01=1.5,quantile_0.5=2,quantile_0.99=3,sum=12 1542182950000000011` |
 | [Distribution](https://vector.dev/docs/about/data-model/metric/#distribution)         | min, max, median, avg, sum, count, quantile 0.95 | `ns.sparse_stats,metric_type=distribution avg=3,count=10,max=4,median=3,min=1,quantile_0.95=4,sum=30 1542182950000000011`                                 |
 
-#### Configuration example
+### Configuration example
 
-##### InfluxDB v1
+#### InfluxDB v1
 ```toml
 [sinks.my_sink_id]
   type = "influxdb_metrics"
@@ -155,7 +164,7 @@ The following matrix outlines how Vector metric types are mapped into InfluxDB L
   password = "${INFLUXDB_PASSWORD_ENV_VAR}"
 ```
 
-##### InfluxDB v2
+#### InfluxDB v2
 ```toml
 [sinks.my_sink_id]
   type = "influxdb_metrics"
