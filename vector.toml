@@ -18,11 +18,16 @@ data_dir = "/var/lib/vector"
   mode = "udp"
   address = "0.0.0.0:5140"
 
+[transforms.skip_not_apache]
+  inputs = [ "syslog" ]
+  type = "filter"
+  condition."message.regex" = '^(?P<host>[\w\.]+) - (?P<user>[\w-]+) \[(?P<timestamp>.*)\] "(?P<method>[\w]+) (?P<path>.*)" (?P<status>[\d]+) (?P<bytes_out>[\d]+)$'
+
 #
 # Transform logs into metrics
 #
 [transforms.regex_parser]
-  inputs = ["syslog"]
+  inputs = ["skip_not_apache"]
   type = "regex_parser"
   patterns = ['^(?P<host>[\w\.]+) - (?P<user>[\w-]+) \[(?P<timestamp>.*)\] "(?P<method>[\w]+) (?P<path>.*)" (?P<status>[\d]+) (?P<bytes_out>[\d]+)$']
 
