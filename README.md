@@ -331,7 +331,7 @@ or [v2](https://v2.docs.influxdata.com/v2.0/api/#tag/Write) HTTP API. Let's conf
 [transforms.regex_parser]
   inputs = ["syslog"]
   type = "regex_parser"
-  regex = '^(?P<host>[\w\.]+) - (?P<user>[\w-]+) \[(?P<timestamp>.*)\] "(?P<method>[\w]+) (?P<path>.*)" (?P<status>[\d]+) (?P<bytes_out>[\d]+)$'
+  patterns = ['^(?P<host>[\w\.]+) - (?P<user>[\w-]+) \[(?P<timestamp>.*)\] "(?P<method>[\w]+) (?P<path>.*)" (?P<status>[\d]+) (?P<bytes_out>[\d]+)$']
 
 [transforms.log_to_metric]
   inputs = ["regex_parser"]
@@ -341,15 +341,32 @@ or [v2](https://v2.docs.influxdata.com/v2.0/api/#tag/Write) HTTP API. Let's conf
   type = "counter"
   increment_by_value = true
   field = "bytes_out"
-  tags = {method = "{{method}}", status = "{{status}}"}
+  tags = {method = "{{method}}", status = "{{status}}"}    
 
 #
-# Output data into InfluxDB 2
+# Output Logs into InfluxDB 2
 #
-[sinks.influxdb_2]
+[sinks.influxdb_2_logs]
+  type = "influxdb_logs"
+  inputs = ["regex_parser"]
+  namespace = "vector-logs"
+  tags = ["appname", "method", "path"]
+  namespace = "vector-metrics"
+  endpoint = "https://us-west-2-1.aws.cloud2.influxdata.com"
+  org = "My Company"
+  bucket = "vector"
+  token = "jSc6rmToXkx6y8vOv1ruac4ZCvYNpGtGzHkrJsF84bi0q9olFjpV6h6yv1f5xNs26_cHVURarPIpd6Bklvfe-w=="
+
+[sinks.influxdb_2_logs.request]
+  rate_limit_num = 1000
+
+#
+# Output Metrics into InfluxDB 2
+#
+[sinks.influxdb_2_metrics]
   type = "influxdb_metrics"
   inputs = ["log_to_metric"]
-  namespace = "vector"
+  namespace = "vector-metrics"
   endpoint = "https://us-west-2-1.aws.cloud2.influxdata.com"
   org = "My Company"
   bucket = "vector"
@@ -382,7 +399,7 @@ Now it’s time to create some charts. To do this, log in into InfluxDB and crea
 ```flux
 from(bucket: "vector")
   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-  |> filter(fn: (r) => r._measurement == "vector.bytes_out")
+  |> filter(fn: (r) => r._measurement == "vector-metrics.bytes_out")
   |> filter(fn: (r) => r._field == "value")
 ```
 
@@ -391,7 +408,7 @@ from(bucket: "vector")
 ```flux  
 from(bucket: "vector")
   |> range(start: 0)
-  |> filter(fn: (r) => r._measurement == "vector.bytes_out")
+  |> filter(fn: (r) => r._measurement == "vector-metrics.bytes_out")
   |> filter(fn: (r) => r._field == "value") 
   |> toInt()
   |> sum(column: "_value")
@@ -403,8 +420,21 @@ from(bucket: "vector")
 ```flux
 from(bucket: "vector")
   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-  |> filter(fn: (r) => r._measurement == "vector.bytes_out")
-```
+  |> filter(fn: (r) => r["_measurement"] == "vector-logs.vector")
+  |> filter(fn: (r) => r["_field"] == "status")
+  |> drop(columns: ["appname", "metric_type", "source_type", "_field", "_measurement", "host"])
+```                     
+
+<img src="requests-count.png">
+
+```flux
+from(bucket: "vector")
+  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+  |> filter(fn: (r) => r["_measurement"] == "vector-logs.vector")
+  |> filter(fn: (r) => r._field == "status")
+  |> drop(columns: ["host", "appname", "path"])
+  |> count()
+```  
 
 and result should looks like:
 

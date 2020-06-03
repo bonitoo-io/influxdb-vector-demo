@@ -1,7 +1,7 @@
 apiVersion: influxdata.com/v2alpha1
 kind: Dashboard
 metadata:
-    name: dangerous-goldstine-fd6001
+    name: exciting-ishizaka-578001
 spec:
     charts:
       - colors:
@@ -11,17 +11,35 @@ spec:
         decimalPlaces: 2
         height: 4
         kind: Single_Stat
-        name: Total Bytes Out
+        name: Metric - Total Bytes Out
         queries:
           - query: "from(bucket: \"my-bucket\")\n  |> range(start: 0)\n  |> filter(fn:
-                (r) => r._measurement == \"vector.bytes_out\")\n  |> filter(fn: (r)
-                => r._field == \"value\") \n  |> toInt()\n  |> sum(column: \"_value\")\n
+                (r) => r._measurement == \"vector-metrics.bytes_out\")\n  |> filter(fn:
+                (r) => r._field == \"value\") \n  |> toInt()\n  |> sum(column: \"_value\")\n
                 \ |> map(fn: (r) => ({ r with _value: r._value / 1024 }))"
         suffix: ' KiB'
         width: 6
       - colors:
-          - hex: '#F48D38'
-            name: tiger
+          - hex: '#00C9FF'
+            name: laser
+            type: text
+        decimalPlaces: 2
+        height: 4
+        kind: Single_Stat
+        name: Log - Requests count
+        queries:
+          - query: |-
+                from(bucket: "my-bucket")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "vector-logs.vector")
+                  |> filter(fn: (r) => r._field == "status")
+                  |> drop(columns: ["host", "appname", "path"])
+                  |> count()
+        width: 2
+        yPos: 4
+      - colors:
+          - hex: '#ffffff'
+            name: white
             type: text
         fieldOptions:
           - displayName: _start
@@ -34,30 +52,40 @@ spec:
           - displayName: method
             fieldName: method
             visible: true
-          - displayName: metric_type
-            fieldName: metric_type
+          - displayName: path
+            fieldName: path
             visible: true
-          - displayName: bytes_out
+          - displayName: status
             fieldName: _value
             visible: true
           - displayName: _field
             fieldName: _field
           - displayName: _measurement
             fieldName: _measurement
-          - displayName: status
-            fieldName: status
+          - displayName: host
+            fieldName: host
+          - displayName: metric_type
+            fieldName: metric_type
+          - displayName: source_type
+            fieldName: source_type
+          - displayName: appname
+            fieldName: appname
         height: 4
         kind: Table
-        name: Requests
+        name: Log - Requests
         queries:
           - query: |-
                 from(bucket: "my-bucket")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "vector.bytes_out")
+                  |> filter(fn: (r) => r["_measurement"] == "vector-logs.vector")
+                  |> filter(fn: (r) => r["_field"] == "status")
+                  |> drop(columns: ["appname", "metric_type", "source_type", "_field", "_measurement", "host"])
         tableOptions:
+            sortBy: _time
             verticalTimeAxis: true
         timeFormat: YYYY-MM-DD HH:mm:ss
-        width: 12
+        width: 10
+        xPos: 2
         yPos: 4
       - axes:
           - base: "10"
@@ -79,13 +107,13 @@ spec:
         geom: line
         height: 4
         kind: Xy
-        name: Bytes Out
+        name: Metric - Bytes Out
         position: overlaid
         queries:
           - query: |-
                 from(bucket: "my-bucket")
                   |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
-                  |> filter(fn: (r) => r._measurement == "vector.bytes_out")
+                  |> filter(fn: (r) => r._measurement == "vector-metrics.bytes_out")
                   |> filter(fn: (r) => r._field == "value")
         width: 6
         xCol: _time

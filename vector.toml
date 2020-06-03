@@ -37,17 +37,33 @@ data_dir = "/var/lib/vector"
   tags = {method = "{{method}}", status = "{{status}}"}
 
 #
-# Output data into InfluxDB 2
+# Output Logs into InfluxDB 2
 #
-[sinks.influxdb_2]
+[sinks.influxdb_2_logs]
+  type = "influxdb_logs"
+  inputs = ["regex_parser"]
+  namespace = "vector-logs"
+  tags = ["appname", "method", "path"]
+  endpoint = "http://influxdb.v2:9999"
+  org = "my-org"
+  bucket = "my-bucket"
+  token = "my-token"
+
+[sinks.influxdb_2_logs.request]
+  rate_limit_num = 1000
+
+#
+# Output Metrics into InfluxDB 2
+#
+[sinks.influxdb_2_metrics]
   type = "influxdb_metrics"
   inputs = ["log_to_metric"]
-  namespace = "vector"
+  namespace = "vector-metrics"
   endpoint = "http://influxdb.v2:9999"
   org = "my-org"
   bucket = "my-bucket"
   token = "my-token"
   
-[sinks.influxdb_2.request]
+[sinks.influxdb_2_metrics.request]
   rate_limit_num = 1000
 
