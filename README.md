@@ -191,9 +191,9 @@ Engineering team uses Vector to tame observability pipelines.
 
 In this article I will describe how to monitor logs from [Apache HTTP Server](https://httpd.apache.org). Our observability pipeline will be use a [Syslog Source](https://vector.dev/docs/reference/sources/syslog/) to ingests data through the Syslog protocol. 
 
-<img src="data-model-metric.svg">
+<img src="data-model-event.svg">
 
-<sup>Architecture diagram from [Vector docs](https://vector.dev/docs/about/data-model/metric/): Data Model: Metric Event</sup>
+<sup>Architecture diagram from [Vector docs](https://vector.dev/docs/about/data-model/): Data Model</sup>
 
 This tutorial assumes that you have account at [InfluxDB Cloud free tier](https://www.influxdata.com/influxdb-cloud-pricing/).
 
