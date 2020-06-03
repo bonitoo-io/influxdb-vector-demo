@@ -383,9 +383,6 @@ As an input for `influxdb_metrics` we will use aggregated metrics by `log_to_met
   bucket = "vector"
   token = "jSc6rmToXkx6y8vOv1ruac4ZCvYNpGtGzHkrJsF84bi0q9olFjpV6h6yv1f5xNs26_cHVURarPIpd6Bklvfe-w=="
 
-[sinks.influxdb_2_logs.request]
-  rate_limit_num = 1000
-
 #
 # Output Metrics into InfluxDB 2
 #
@@ -413,7 +410,7 @@ docker run \
        --network influx_network \
        --publish 5140:5140/udp \
        --volume "${PWD}"/vector.toml:/etc/vector/vector.toml:ro \
-       timberio/vector:nightly-2020-02-19-alpine
+       timberio/vector:nightly-2020-06-02-alpine
 ```    
 
 ## Visualize metrics in InfluxDB
